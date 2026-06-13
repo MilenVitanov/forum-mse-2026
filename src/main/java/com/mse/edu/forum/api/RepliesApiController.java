@@ -41,9 +41,9 @@ public class RepliesApiController implements RepliesApi {
 
 	@Override
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<ReplyResponse> createReply(Long postId, @Valid CreateReplyRequest createReplyRequest) {
-		log.debug("createReply postId={}", postId);
-		ReplyResponse created = replyService.create(postId, createReplyRequest);
+	public ResponseEntity<ReplyResponse> createReply(@Valid CreateReplyRequest createReplyRequest) {
+		log.debug("createReply postId={}", createReplyRequest.getPostId());
+		ReplyResponse created = replyService.create(createReplyRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 }

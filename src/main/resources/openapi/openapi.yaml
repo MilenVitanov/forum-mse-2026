@@ -125,17 +125,11 @@ paths:
         "404":
           description: Post not found
 
+  /replies:
     post:
       tags: [Replies]
       operationId: createReply
       summary: Create a reply on a post
-      parameters:
-        - name: postId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
       requestBody:
         required: true
         content:
@@ -408,11 +402,17 @@ components:
 
     CreateReplyRequest:
       type: object
-      required: [content]
+      required: [content, userId]
       properties:
         content:
           type: string
           maxLength: 10000
+        userId:
+          type: integer
+          format: int64
+        postId:
+          type: integer
+          format: int64
 
     ReplyResponse:
       type: object
