@@ -3,11 +3,13 @@ package com.mse.edu.forum.service;
 import com.mse.edu.forum.api.generated.model.CreatePostRequest;
 import com.mse.edu.forum.api.generated.model.PostResponse;
 import com.mse.edu.forum.domain.PostEntity;
+import com.mse.edu.forum.domain.UserEntity;
 import com.mse.edu.forum.mapper.PostMapper;
 import com.mse.edu.forum.repo.PostRepository;
 import java.util.List;
 import java.util.Optional;
 
+import com.mse.edu.forum.repo.UserRepository;
 import com.mse.edu.forum.repo.custom.PostRepositoryCustom;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,21 +20,23 @@ public class PostService {
 
 	private final PostRepository postRepository;
     private final PostRepositoryCustom postRepositoryCustom;
+    private final UserRepository userRepository;
 	private final PostMapper postMapper;
 
-	public PostService(PostRepository postRepository, PostRepositoryCustom postRepositoryCustom, PostMapper postMapper) {
+	public PostService(PostRepository postRepository, PostRepositoryCustom postRepositoryCustom, UserRepository userRepository, PostMapper postMapper) {
 		this.postRepository = postRepository;
         this.postRepositoryCustom = postRepositoryCustom;
+        this.userRepository = userRepository;
 		this.postMapper = postMapper;
 	}
 
 	@Transactional(readOnly = true)
 	public List<PostResponse> findAll() {
-		return entityListToResponse(postRepository.findAll());
-//      return entityListToResponse(postRepository.findAll(PageRequest.of(0,2)).getContent());
+//		return entityListToResponse(postRepository.findAll());
+//      return entityListToResponse(postRepository.findAll(PageRequest.of(1,2)).getContent());
 //      return entityListToResponse(postRepository.findByUserId((long)2));
 //      return entityListToResponse(postRepository.whatDoesThisQueryFindByUserId((long)2));
-//      return entityListToResponse(postRepositoryCustom.findPostsByUserId((long)2));
+      return entityListToResponse(postRepositoryCustom.findPostsByUserId((long)2));
 	}
 
 	@Transactional(readOnly = true)
@@ -43,6 +47,8 @@ public class PostService {
 	@Transactional
 	public PostResponse create(CreatePostRequest request) {
 		PostEntity postEntity = postMapper.toEntity(request);
+        UserEntity user = userRepository.findById(request.getUserId()).get();
+        postEntity.setUser(user);
 		PostEntity saved = postRepository.save(postEntity);
 		return postMapper.toResponse(saved);
 	}

@@ -41,6 +41,10 @@ public class PostEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    public void setUser(UserEntity user){
+        this.user = user;
+    }
+
     @OneToMany(mappedBy = "post")
     private List<ReplyEntity> replies;
 
